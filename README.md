@@ -1,9 +1,4 @@
-# General Conference Analyzer
-## Project Description
-The purpose of this project is to create a tool to analyze the talks presented in various General Conferences of the Church of Jesus Christ of Latter-Day Saints. 
+The purpose of this repository is to scrape, store, analyze, and visualize data from various text sources. The lib folder contains general, reusable components. 
 
-## Data
-### Data Source
-The data for this project was primarily scraped from https://www.churchofjesuschrist.org/study/general-conference/
-To reuse the scrapers, go to ./src/scrape-data. Most of the scrapers can be run as code snippets in Google Chrome. 
+The clients folder contains code for specific text sources. Each subfolder should have its own README to describe the data source and any particular quirks for that data set. 
 
