@@ -1,4 +1,3 @@
-src/analyze/bin
-src/analyze/obj
 *.vscode
+*/webdrivers/*
 
