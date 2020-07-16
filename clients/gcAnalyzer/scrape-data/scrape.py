@@ -9,7 +9,7 @@ DRIVER_PATH = "/Users/steven/Documents/personal/projects/text-analyzer/lib/webdr
 
 # setup the driver
 options = Options()
-options.headless = False
+options.headless = True
 
 driver = webdriver.Firefox(options=options, executable_path=DRIVER_PATH)
 wait = WebDriverWait(driver, 10)
@@ -22,22 +22,23 @@ driver.get('https://www.churchofjesuschrist.org/study/general-conference?lang=en
 
 
 def visit_all_cards():
-    print('visiting all cards')
     conference_content = driver.find_elements_by_class_name('manifest')
     cards = driver.find_elements_by_css_selector(card_selector)
 
     if len(conference_content) > 0:
         visit_all_talks()
     else:
+        refs = []
         for card in cards:
             ref = card.get_attribute("href")
+            refs.append(ref)
+        for ref in refs:
             print(ref)
             driver.get(ref)
             visit_all_cards()
 
 
 def visit_all_talks():
-    print('visiting all talks')
     talks = driver.find_elements_by_css_selector(talk_selector)
     for talk in talks:
         talk.click()
@@ -45,7 +46,6 @@ def visit_all_talks():
 
 
 def scrape_one_talk():
-    print('scraping one talk')
     #title_ele = driver.find_elements_by_xpath("//h1[@id='title1']")
     #title = title_ele[0].text
 
@@ -57,8 +57,9 @@ def scrape_one_talk():
     for e in paragraph_elements:
         paragraphs.append(e.text)
 
-    for p in paragraphs:
-        print(p)
+    #for p in paragraphs:
+    #    print(p)
+    print(f"Scraped {len(paragraphs)} paragraphs from a talk")
 
 
 visit_all_cards()
