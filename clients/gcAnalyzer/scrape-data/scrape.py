@@ -9,7 +9,6 @@ DRIVER_PATH = "/Users/steven/Documents/personal/projects/text-analyzer/lib/webdr
 BASE_PATH = "https://www.churchofjesuschrist.org/study/general-conference?lang=eng"
 
 # run settings
-debug = True
 quit_early = True
 ready_to_quit = False
 talks_before_early_quit = 3
@@ -47,6 +46,8 @@ def scrape_gen_conf():
         links. At each page visited while iterating through the links, check
         whether conference content is visible. If so, call visit_all_talks().
         If not, recursively call self.
+
+        Returns: an array of scraped conference talks.
         """
         global ready_to_quit
         talks = []
@@ -77,6 +78,8 @@ def scrape_gen_conf():
         page with a session of conference displayed. Iterate through all
         displayed talks in this session of conference, calling scrape_one_talk
         on each one.
+
+        Returns: an array of all conference talks from one session of conference.
         """
         global talks_before_early_quit
         global ready_to_quit
@@ -96,8 +99,10 @@ def scrape_gen_conf():
 
         This method assumes that the web driver has already navigated to
         the page where the target talk is.
+
+        Returns: a dictionary containing the author, title, and content
+            from the conference talk.
         """
-        global debug
         talk = {}
         title = ""
         author = ""
@@ -120,10 +125,6 @@ def scrape_gen_conf():
         talk["author"] = author
         talk["paragraphs"] = paragraphs
 
-        for p in paragraphs:
-            print(p)
-        if debug:
-            print(f"Scraped {len(paragraphs)} paragraphs from {title} by {author}")
         return talk
 
     return visit_all_cards()
