@@ -12,7 +12,7 @@ BASE_PATH = "https://www.churchofjesuschrist.org/study/general-conference?lang=e
 debug = True
 quit_early = True
 ready_to_quit = False
-talks_before_early_quit = 10
+talks_before_early_quit = 3
 
 
 def scrape_gen_conf():
@@ -49,13 +49,14 @@ def scrape_gen_conf():
         If not, recursively call self.
         """
         global ready_to_quit
+        talks = []
         if ready_to_quit:
-            return
+            return talks
         conference_content = driver.find_elements_by_class_name("manifest")
         cards = driver.find_elements_by_css_selector(card_selector)
 
         if len(conference_content) > 0:
-            visit_all_talks()
+            talks = talks + visit_all_talks()
         else:
             refs = []
             for card in cards:
@@ -63,10 +64,11 @@ def scrape_gen_conf():
                 refs.append(ref)
             for ref in refs:
                 if ready_to_quit:
-                    return
+                    return talks
                 print(ref)
                 driver.get(ref)
-                visit_all_cards()
+                talks = talks + visit_all_cards()
+        return talks
 
     def visit_all_talks():
         """ Iterate through all talks in this session of conference.
@@ -78,14 +80,16 @@ def scrape_gen_conf():
         """
         global talks_before_early_quit
         global ready_to_quit
-        talks = driver.find_elements_by_css_selector(talk_selector)
-        for talk in talks:
+        talks = []
+        talks_elements = driver.find_elements_by_css_selector(talk_selector)
+        for talk in talks_elements:
             talks_before_early_quit = talks_before_early_quit - 1
             if quit_early and talks_before_early_quit < 0:
                 ready_to_quit = True
-                return
+                return talks
             talk.click()
-            scrape_one_talk()
+            talks.append(scrape_one_talk())
+        return talks
 
     def scrape_one_talk():
         """ Scrape the content, title, and author of one conference talk.
@@ -94,6 +98,7 @@ def scrape_gen_conf():
         the page where the target talk is.
         """
         global debug
+        talk = {}
         title = ""
         author = ""
 
@@ -111,12 +116,17 @@ def scrape_gen_conf():
         for e in paragraph_elements:
             paragraphs.append(e.text)
 
+        talk["title"] = title
+        talk["author"] = author
+        talk["paragraphs"] = paragraphs
+
         for p in paragraphs:
             print(p)
         if debug:
             print(f"Scraped {len(paragraphs)} paragraphs from {title} by {author}")
+        return talk
 
-    visit_all_cards()
+    return visit_all_cards()
     driver.quit()
 
     print("Successfully completed scrape script")
