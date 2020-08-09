@@ -27,7 +27,7 @@ def scrape_gen_conf():
 
     # setup the driver
     options = Options()
-    options.headless = False
+    options.headless = True
 
     driver = webdriver.Firefox(options=options, executable_path=DRIVER_PATH)
     wait = WebDriverWait(driver, 10)
@@ -124,6 +124,7 @@ def scrape_gen_conf():
         talk["title"] = title
         talk["author"] = author
         talk["paragraphs"] = paragraphs
+        talk["content"] = "".join(paragraphs)
 
         return talk
 
