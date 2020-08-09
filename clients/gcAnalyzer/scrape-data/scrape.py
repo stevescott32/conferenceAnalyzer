@@ -127,7 +127,8 @@ def scrape_gen_conf():
 
         return talk
 
-    return visit_all_cards()
-    driver.quit()
-
+    talks = visit_all_cards()
     print("Successfully completed scrape script")
+    driver.quit()
+    return talks
+
