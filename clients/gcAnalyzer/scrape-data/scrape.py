@@ -1,3 +1,4 @@
+import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -11,19 +12,24 @@ BASE_PATH = "https://www.churchofjesuschrist.org/study/general-conference?lang=e
 # run settings
 quit_early = True
 ready_to_quit = False
-talks_before_early_quit = 3
+talks_before_early_quit = 1
 
 
-def scrape_gen_conf():
+def scrape_gen_conf(how_many_talks):
     """Scrape talks from general conference.
 
     Creates a Selenium Web Driver. Starting at BASE_PATH, visit all cards
     (eventually visiting every session of general conference).
     At each card, scrape the author, title, and content of each talk.
 
+    Args:
+        how_many_talks an integer specifying how many talks to scrape
+
     Returns: an array of conference talks.
     """
     print("Starting to scrape general conference talks")
+    global talks_before_early_quit
+    talks_before_early_quit = how_many_talks
 
     # setup the driver
     options = Options()
@@ -119,7 +125,9 @@ def scrape_gen_conf():
         paragraph_elements = driver.find_elements_by_xpath("//div[@class='body-block']//p")
         paragraphs = []
         for e in paragraph_elements:
-            paragraphs.append(e.text)
+            p_text = e.text
+            p_text = p_text.replace(".", ". ")
+            paragraphs.append(p_text)
 
         talk["title"] = title
         talk["author"] = author
