@@ -3,7 +3,7 @@ import scrape
 import textblob
 
 print('Starting main')
-conf_talks = scrape.scrape_gen_conf(20)
+conf_talks = scrape.scrape_gen_conf(30)
 
 
 def run_sentiment_analysis(talks):
@@ -32,5 +32,12 @@ def run_neg_noun_analysis(talks):
                 for noun in sentence_blob.noun_phrases:
                     print(noun)
 
+def word_freq_per_talk(word, talks):
+    for talk in talks:
+        blob = textblob.TextBlob(talk["content"])
+        count = blob.words.count(word)
+        print("The talk '" + talk["title"] + "' has the word " + word + " " + str(count) + " times")
 
-run_neg_noun_analysis(conf_talks)
+
+# run_neg_noun_analysis(conf_talks)
+word_freq_per_talk("hope", conf_talks)
