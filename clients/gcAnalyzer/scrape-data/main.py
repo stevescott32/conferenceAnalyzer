@@ -32,6 +32,7 @@ def run_neg_noun_analysis(talks):
                 for noun in sentence_blob.noun_phrases:
                     print(noun)
 
+
 def word_freq_per_talk(word, talks):
     for talk in talks:
         blob = textblob.TextBlob(talk["content"])
@@ -39,5 +40,13 @@ def word_freq_per_talk(word, talks):
         print("The talk '" + talk["title"] + "' has the word " + word + " " + str(count) + " times")
 
 
+def tags(talks):
+    for talk in talks:
+        blob = textblob.TextBlob(talk["content"])
+        blob.parse()
+        print(blob.tags)
+
+
 # run_neg_noun_analysis(conf_talks)
-word_freq_per_talk("hope", conf_talks)
+# word_freq_per_talk("hope", conf_talks)
+tags(conf_talks)
